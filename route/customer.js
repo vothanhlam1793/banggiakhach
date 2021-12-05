@@ -1,5 +1,7 @@
 var url= "https://script.google.com/macros/s/AKfycbxpn0Yxexari6sRTbBrfQD6l619IjqjmOLSx8tQRze0Dv91z6gHz6HX2D5Zw8vz5I3Y/exec";
 var fetch = require("node-fetch");
+const fs = require('fs');
+
 var objProduct = {
     date: new Date("2000-01-01"),
     data: []
@@ -67,10 +69,52 @@ module.exports = async app => {
     var router = require("express").Router(); 
 
     router.get("/", (req, res)=>{
+        console.log(req.query);
         res.render("customer/index", {
             title: "Bảng giá phụ kiện"
         })
     })
+
+    router.get("/modal", (req, res)=>{
+        fs.readFile(__dirname + "/data/modal.json", (err, m) => {
+            if (err) throw err;
+            res.send(JSON.parse(m));
+        });
+    })
+
+    router.post("/modal", (req, res)=>{
+        if(req.body.pwd != "asrkpvg7"){
+             return res.status(200).send("Xin chào!. Bằng cách nào đó bạn không nhập đúng password!. Hỏi Sếp nhé!.");
+        }
+        req.body.pwd = "";
+        var m = require(__dirname + "/data/modal.json");
+        // console.log(req.body, m);
+
+        if (!req.files || Object.keys(req.files).length === 0) {
+            let data = JSON.stringify(req.body);
+            fs.writeFileSync(__dirname + '/data/modal.json', data);
+            res.send("Đã cập nhật");
+        } else {
+            // Co luu file
+            console.log(req.files);
+            sampleFile = req.files.img;
+            req.body.img = sampleFile.name;
+            uploadPath = __dirname + '/../public/images/modal/' + sampleFile.name;
+            sampleFile.mv(uploadPath, function(err) {
+                if (err)
+                    return res.status(500).send(err);
+                // res.send('File uploaded!');
+                res.send("Đã cập nhật");
+            });
+            let data = JSON.stringify(req.body);
+            fs.writeFileSync(__dirname + '/data/modal.json', data);
+        }
+    })
+
+    router.get("/setModal", (req, res)=>{
+        res.render("customer/createModal");
+    })
+
     router.get("/cart", (req, res)=>{
         res.render("customer/cart", {
             title: "Giỏ hàng"

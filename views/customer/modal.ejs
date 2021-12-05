@@ -1,0 +1,52 @@
+<div id="modal-modal">
+    <!-- <button id="btnOpenModal" @click="toggle()">Open Modal</button> -->
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="text-center border border-dark">
+                    <div class="p-2 bg bg-dark">
+                        <button type="button" class="btn btn-danger mb-2" @click="toggle()">Đóng</button>
+                        <img :src="'/images/modal/' + model.modal.img" class="img-fluid" alt="Quảng cáo">
+                    </div>
+                </div>
+        
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    class ModelModal {
+        constructor(){
+            this.modal = {};
+            this.onDataUpdate = function(){};
+            var that = this;
+            $.get("/modal", function(data){
+                that.modal = data;
+                that.onDataUpdate();
+            });
+        }
+    }
+    var vm_modal = new Vue({
+        el: "#modal-modal",
+        data: {
+            model: new ModelModal(),
+        },
+        methods: {
+            toggle: function(){
+                jQuery("#myModal").toggle();
+            },
+            render: function(){
+                this.$forceUpdate();
+                this.openModal();
+            },
+            openModal: function(){
+                if(this.model.modal.state == "ON"){
+                    jQuery("#myModal").show();
+                }
+            }
+        },
+        mounted: function(){
+            this.model.onDataUpdate = this.render;
+        }
+    })
+</script>

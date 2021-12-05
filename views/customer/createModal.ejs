@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <%- include("header.ejs", {title: "Cài Modal"}) %>
+        <script src="/js/customer/model.js"></script>
+    </head>
+    <body class="container-fluid">
+        <div>   
+            <%- include("menu.ejs",{}) %>
+        </div>
+        <div class="text-center mt-2">
+            <h1>Cài đặt nội dung quản cáo</h1>
+            <div>
+                <form action="/modal" method="POST" encType="multipart/form-data">
+                    <select class="form-control" name="state">
+                        <option value="ON">Bật</option>
+                        <option value="OFF">Tắt</option>
+                    </select>
+                    <input class="form-control mt-3 mb-3" placeholder="Tiêu đề trang" name="title">
+                    <input type="file" name="img" class="form-control"> 
+                    <input type="" class="form-control mt-3 mb-3" placeholder="Nhập mật khẩu" name="pwd">
+                    <input type="submit" class="btn btn-success" value="Đăng bài">
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
