@@ -16,13 +16,16 @@
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",
+    "get-port": "^6.0.0",
     "glob": "^7.2.0",
+    "ip-address": "^8.1.0",
     "json-as-xlsx": "^2.2.2",
     "mongoose": "^6.0.12",
     "morgan": "^1.10.0",
     "multer": "^1.4.3",
     "node-fetch": "^2.0.0",
     "node-xlsx": "^0.17.2",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "tcp-ping-port": "^1.0.1"
   }
 }

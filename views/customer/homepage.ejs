@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <%- include("header.ejs", {title: title}) %>
+        <script src="/js/customer/model.js"></script>
+    </head>
+    <body class="container-fluid">
+        <div>   
+            <%- include("menu.ejs",{}) %>
+        </div>
+        <div class="">
+            <div class="jumbotron">
+                <h2>PHỤ KIỆN CRETA</h2>  
+                <p>
+                    Phân phối thiết bị / phụ kiện Camera
+                </p>
+            </div>
+            <div class="border mb-3" onclick="location.href='/banggia';">
+                <div class="text-center p-3">
+                    <div class="border border-danger p-3">
+                        <h4>Bảng giá hàng hóa</h4>
+                        <img style="width: 100" class="rounded" src="/images/icons8-order-completed.gif">
+                    </div>
+                </div>
+            </div>
+            <div class="border">
+                <div class="text-center row p-3">
+                    
+                    <div class="col p-2" onclick="location.href='/tool/checkport';">
+                        <div class="border border-success p-3">
+                            <p>Kiểm tra cổng</p>
+                            <img style="width: 50" class="rounded" src="/images/icons8-network-100.png">
+                        </div>    
+                    </div>
+                    <div class="col p-2" onclick="location.href='/tool/calchdd';">
+                        <div class="border border-primary h-100 p-3">
+                            <p>Tính ổ cứng</p>
+                            <img style="width: 50" class="rounded" src="/images/icons8-hdd-100.png">
+                        </div>                        
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

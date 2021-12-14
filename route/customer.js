@@ -58,7 +58,12 @@ async function getSheetData(pUrl, pNew){
     }
     if(vNew == 1){
         var res = await fetch(pUrl);
-        var j = await res.json();
+        var j = {};
+        try {
+            j = await res.json();
+        } catch (e) {
+            
+        }
         objProduct.date = new Date();
         objProduct.data = j;
     }
@@ -69,6 +74,13 @@ module.exports = async app => {
     var router = require("express").Router(); 
 
     router.get("/", (req, res)=>{
+        console.log(req.query);
+        res.render("customer/homepage", {
+            title: "Phụ kiện Creta"
+        })
+    })
+
+    router.get("/banggia", (req, res)=>{
         console.log(req.query);
         res.render("customer/index", {
             title: "Bảng giá phụ kiện"

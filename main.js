@@ -24,6 +24,7 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
+require("./route/tool.route")(app);
 require("./route/customer")(app);
 app.use("/baogia", require("./route/baogia"));
 

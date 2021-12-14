@@ -1,0 +1,111 @@
+<div id="checkport">
+    <div class="form-group">
+        <input class="form-control m-1" v-model="tcp.domain" placeholder="Nhập tên miền hoặc IP">
+        <input class="form-control m-1" v-model="tcp.port" placeholder="PORT">
+        <div class="row m-1">
+            <div class="col text-center">
+                <button class="btn btn-secondary" @click="tcp.check()">Kiểm tra</button>
+            </div>
+        </div>
+    </div>
+    <div class="">
+        <p>IP-WAN: <span class="badge badge-success p-2">{{ip.getIP()}}</span></p>
+    </div>
+    
+    <div class="mt-2" v-if="isMobile() == false">
+        <table class="table table-bordered">
+            <tr>
+                <th style="">S</th>
+                <th>Tên miền</th>
+                <th>Cổng</th>
+                <th>Thời gian</th>
+            </tr>
+            <tr v-for="res in tcp.result">
+                <td><icon-check :status="res.online"></icon-check></td>
+                <td>{{res.host}}<br>{{res.ip}}</td>
+                <td>{{res.port}}</td>
+                <td>
+                    <div v-if="res.online == 'checking'">
+                        <counter></counter>
+                    </div>
+                    <div v-else>
+                        {{res.timeCheck/1000}} s
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="mt-2 table-responsive" v-else>
+        <table class="table table-bordered">
+            <tr>
+                <th style="">S</th>
+                <th>Cổng</th>
+                <th>Tên miền</th>
+            </tr>
+            <tr v-for="res in tcp.result">
+                <td><icon-check :status="res.online"></icon-check></td>
+                <td>{{res.port}}</td>
+                <td>{{res.host}}<br>{{res.ip}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+    Vue.component('counter', {
+        props: ['start'],
+        data: function(){
+            return {
+                counter: 0
+            }
+        },
+        created: function(){
+            var that = this;
+            // this.counter = parseInt(this.start);
+            setInterval(function(){
+                that.counter += 100;
+            }, 100)
+        },
+        template: `
+            <div>
+                <p>{{counter/1000}} s</p>
+            </div>
+        `
+    })
+    Vue.component("icon-check", {
+        props: ['status'],
+        data: function(){
+            return {
+
+            }
+        },
+        template: `
+            <div style="width: 3em; height: 3em">
+                <div v-if="status=='checking'">
+                    <img class="img-thumbnail" src="/images/icons8-spinner.gif"/>
+                    </div>
+                <div v-if="status==true">
+                    <img class="img-thumbnail" src="/images/ok--v1.png"/>
+                </div>
+                <div v-if="status==false">
+                    <img class="img-thumbnail" src="/images/delete-sign.png"/>
+                </div>    
+            </div>
+        `
+    })
+    var app_checkport = new Vue({
+        el: "#checkport",
+        mixins: [_support_vue],
+        data: {
+            tcp: new TCPCheck(),
+            ip: new IP(),
+        },
+        methods: {
+            onUpdateData: function(){
+                console.log(this.tcp.result);
+            }
+        },
+        created: function(){
+            this.tcp.onUpdateData = this.onUpdateData;
+        }
+    })
+</script>

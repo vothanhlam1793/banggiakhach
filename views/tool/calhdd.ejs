@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <%- include("../customer/header.ejs", {title: title}) %>
+        <script src="/js/customer/model.js"></script>
+        <script src="/js/tool/TCP.js"></script>
+    </head>
+    <body class="container-fluid">
+        <div>   
+            <%- include("../customer/menu.ejs",{}) %>
+        </div>
+        <div class="text-center mt-2">
+            <h4>Tính ổ cứng</h4>
+        </div>
+        <div>
+            <%- include("module_calhdd"); %>
+        </div>
+    </body>
+</html>

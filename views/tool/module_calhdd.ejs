@@ -1,0 +1,313 @@
+<div id="cal_hdd">
+    <div class="">
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label>Số camera</label>
+                    <input @change="calc()" class="form-control" v-model="myCameras" type="number">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label>Frames (fps)</label>
+                    <select @change="calc()"  class="form-control" v-model="myFrames">
+                        <option v-for="i in [...Array(30).keys()]" :value="i+1">{{i + 1}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label>Số giờ chuyển động</label>
+                    <select @change="calc()"  class="form-control" v-model="myHours">
+                            <option v-for="i in [...Array(24).keys()]" :value="i+1">{{i + 1}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label>Ngày lưu trữ</label>
+                    <input @change="calc()"  class="form-control" v-model="myDays" type="number">
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label>Độ phân giải</label>
+                    <select @change="calc()"  class="form-control" v-model="myResolution">
+                        <option selected>960</option>
+                        <option>720p</option>
+                        <option>1080p</option>
+                        <option>3MP</option>
+                        <option>5MP</option>
+                        <option value="8MP\/4K">4K</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label>Chất lượng hình ảnh</label>
+                    <select @change="calc()"  class="form-control" v-model="vidQuality">
+                        <option>Low</option>
+                        <option>Medium</option>
+                        <option>High</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label>Chuẩn mã hóa</label>
+                    <select @change="calc()"  class="form-control" v-model="compType">
+                        <option value="MJPEG">MJPEG</option>
+                        <option value="264">H.264</option>
+                        <option value="265">H.265</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h5>Kết quả</h5>
+            <div class="text-center">
+                <div v-if="myResult < 1">
+                    <h2>{{Math.round(myResult * 10000)/10}} GB</h2>
+                </div>
+                <div v-else>
+                    <h2>{{Math.round(myResult * 10)/10}} TB</h2>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        
+    </div>
+</div>
+<script>
+    function calc(myFrames, myHours, myDays, myCameras, myResolution, vidQuality, compType){
+        var myResult = (myHours * myDays * myCameras * 3600) / (8 * 1000 * 1000);
+        if (compType == "MJPEG") {
+            if (vidQuality == "High") {
+                switch (myResolution) {
+                case "960":
+                    myResult = myResult * ((myFrames * .8447) - .015);
+                    break;
+                case "720p":
+                    myResult = myResult * ((myFrames * 1.4068) + .0047);
+                    break;
+                case "1080p":
+                    myResult = myResult * ((myFrames * 3.16368) + .0094);
+                    break;
+                case "3MP":
+                    myResult = myResult * ((myFrames * 4.8) - (Math.pow(4, -14)));
+                    break;
+                case "5MP":
+                    myResult = myResult * ((myFrames * 7.6897) - .0117);
+                    break;
+                case "8MP\/4K":
+                    myResult = myResult * ((myFrames * 12.654) + .0378);
+                    break;
+                }
+            } else if (vidQuality == "Medium") {
+                switch (myResolution) {
+                case "960":
+                    myResult = myResult * ((0.5493 * myFrames) + 0.0319);
+                    break;
+                case "720p":
+                    myResult = myResult * ((0.9164 * myFrames) + 0.0039);
+                    break;
+                case "1080p":
+                    myResult = myResult * ((2.0636 * myFrames) + 0.0094);
+                    break;
+                case "3MP":
+                    myResult = myResult * ((3.131 * myFrames) - 0.0003);
+                    break;
+                case "5MP":
+                    myResult = myResult * ((5.0146 * myFrames) - 0.0042);
+                    break;
+                case "8MP\/4K":
+                    myResult = myResult * ((8.2539 * myFrames) + 0.0011);
+                    break;
+                }
+            } else if (vidQuality == "Low") {
+                switch (myResolution) {
+                case "960":
+                    myResult = myResult * ((0.2754 * myFrames) + 0.0108);
+                    break;
+                case "720p":
+                    myResult = myResult * ((0.4592 * myFrames) + 0.0161);
+                    break;
+                case "1080p":
+                    myResult = myResult * ((1.0324 * myFrames) + 0.0025);
+                    break;
+                case "3MP":
+                    myResult = myResult * ((1.5653 * myFrames) + 0.0083);
+                    break;
+                case "5MP":
+                    myResult = myResult * ((2.5068 * myFrames) + 0.0047);
+                    break;
+                case "8MP\/4K":
+                    myResult = myResult * ((4.1278 * myFrames) - 0.0222);
+                    break;
+                }
+            }
+            } else if (compType == "264") {
+            if (vidQuality == "High") {
+                switch (myResolution) {
+                case "960":
+                    myResult = myResult * ((0.0485 * myFrames) + 0.0356);
+                    break;
+                case "720p":
+                    myResult = myResult * ((0.0856 * myFrames) + 0.0203);
+                    break;
+                case "1080p":
+                    myResult = myResult * ((0.2029 * myFrames) + 0.0805);
+                    break;
+                case "3MP":
+                    myResult = myResult * ((0.2897 * myFrames) + 0.0071);
+                    break;
+                case "5MP":
+                    myResult = myResult * ((0.4649 * myFrames) + 0.0345);
+                    break;
+                case "8MP\/4K":
+                    myResult = myResult * ((0.7691 * myFrames) + 0.0213);
+                    break;
+                }
+            } else if (vidQuality == "Medium") {
+                switch (myResolution) {
+                case "960":
+                    myResult = myResult * ((0.0268 * myFrames) - 0.0082);
+                    break;
+                case "720p":
+                    myResult = myResult * ((0.0454 * myFrames) - 0.0416);
+                    break;
+                case "1080p":
+                    myResult = myResult * (0.1 * myFrames);
+                    break;
+                case "3MP":
+                    myResult = myResult * ((0.1515 * myFrames) - 0.0356);
+                    break;
+                case "5MP":
+                    myResult = myResult * ((0.2412 * myFrames) - 0.0285);
+                    break;
+                case "8MP\/4K":
+                    myResult = myResult * ((0.3938 * myFrames) - 0.0061);
+                    break;
+                }
+            } else if (vidQuality == "Low") {
+                switch (myResolution) {
+                case "960":
+                    myResult = myResult * ((0.0165 * myFrames) - 0.0011);
+                    break;
+                case "720p":
+                    myResult = myResult * ((0.0268 * myFrames) - 0.0082);
+                    break;
+                case "1080p":
+                    myResult = myResult * ((0.0588 * myFrames) + 0.0285);
+                    break;
+                case "3MP":
+                    myResult = myResult * ((0.0897 * myFrames) + 0.0071);
+                    break;
+                case "5MP":
+                    myResult = myResult * ((0.1474 * myFrames) - 0.0224);
+                    break;
+                case "8MP\/4K":
+                    myResult = myResult * ((0.2412 * myFrames) - 0.0285);
+                    break;
+                }
+            }
+            } else if (compType == "265") {
+            if (vidQuality == "High") {
+                switch (myResolution) {
+                case "960":
+                    myResult = myResult * ((0.0309 * myFrames) - 0.0213);
+                    break;
+                case "720p":
+                    myResult = myResult * ((0.0515 * myFrames) - 0.0356);
+                    break;
+                case "1080p":
+                    myResult = myResult * ((0.1134 * myFrames) - 0.0299);
+                    break;
+                case "3MP":
+                    myResult = myResult * ((0.1691 * myFrames) + 0.0213);
+                    break;
+                case "5MP":
+                    myResult = myResult * ((0.2691 * myFrames) + 0.0213);
+                    break;
+                case "8MP\/4K":
+                    myResult = myResult * ((0.4474 * myFrames) - 0.0224);
+                    break;
+                }
+            } else if (vidQuality == "Medium") {
+                switch (myResolution) {
+                case "960":
+                    myResult = myResult * ((0.0144 * myFrames) - 0.0203);
+                    break;
+                case "720p":
+                    myResult = myResult * ((0.0247 * myFrames) - 0.0274);
+                    break;
+                case "1080p":
+                    myResult = myResult * ((0.0546 * myFrames) + 0.0416);
+                    break;
+                case "3MP":
+                    myResult = myResult * ((0.0856 * myFrames) + 0.0203);
+                    break;
+                case "5MP":
+                    myResult = myResult * ((0.1371 * myFrames) - 0.0153);
+                    break;
+                case "8MP\/4K":
+                    myResult = myResult * ((0.2247 * myFrames) - 0.0274);
+                    break;
+                }
+            } else if (vidQuality == "Low") {
+                switch (myResolution) {
+                case "960":
+                    myResult = myResult * ((0.0103 * myFrames) - 0.0071);
+                    break;
+                case "720p":
+                    myResult = myResult * ((0.0165 * myFrames) - 0.0011);
+                    break;
+                case "1080p":
+                    myResult = myResult * ((0.0412 * myFrames) - 0.0285);
+                    break;
+                case "3MP":
+                    myResult = myResult * ((0.0588 * myFrames) + 0.0285);
+                    break;
+                case "5MP":
+                    myResult = myResult * ((0.0938 * myFrames) - 0.0061);
+                    break;
+                case "8MP\/4K":
+                    myResult = myResult * ((0.1546 * myFrames) + 0.0416);
+                    break;
+                }
+            }
+            }
+            return myResult;
+    }
+
+    var app_cal_hdd = new Vue({
+        el: "#cal_hdd",
+        data: {
+            myFrames: 15,
+            myHours: 12,
+            myDays: "7",
+            myCameras: 4,
+            myResolution: "1080p",
+            vidQuality: "High",
+            myResult: "",
+            compType: "264"
+        },
+        methods: {
+            calc: function(){
+                this.myResult = calc(parseInt(this.myFrames), parseInt(this.myHours), parseInt(this.myDays), parseInt(this.myCameras), this.myResolution, this.vidQuality, this.compType);
+            }
+        },
+        created: function(){
+            this.calc();
+        }
+    })
+</script>
