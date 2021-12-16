@@ -1,40 +1,104 @@
 <div id="xemlaidon">
-    
     <div class="alert alert-warning">
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Nhập mã đơn hàng" v-model="code">
             <div class="input-group-append">
-                <button class="btn btn-success" type="submit" @click="find()">Tìm đơn hàng</button>  
+                <button class="btn btn-success" type="submit" @click="model.setCode(code)">Tìm đơn hàng</button>  
             </div>
         </div>
     </div>
     <div>
         <h4>Thông tin đơn hàng</h4>
-        <table class="table table-bordered">
-            <tr >
-                <td></td>
-                <td></td>
-            </tr>
-        </table>
+        <div v-if="model.data">
+            <p>Số điện thoại: <strong>***{{model.getPhone()}}</strong></p>
+            <p>Trạng thái: <strong>{{model.getStatus()}}</strong></p>
+            <table class="table table-bordered">
+                <tr v-for="p in model.getCart()">
+                    <td>{{p.getName()}}</td>
+                    <td class="text-center">{{p.getQuanlity()}}</td>
+                    <td class="text-right">{{numberWithCommas(p.getPrice())}}</td>
+                    <td class="text-right">{{numberWithCommas(p.getTotal())}}</td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
 <script>
+    class CProduct {
+        constructor(product){
+            this.data = product;
+        }
+        getTotal = () => {
+            return this.data.price * this.data.quanlity;
+        }
+        getName = ()=>{
+            return this.data.name;
+        }
+        getQuanlity = () => {
+            return this.data.quanlity;
+        }
+        getPrice = () => {
+            return this.data.price;
+        }
+    }
+    class CCart{
+        constructor(code){
+            this.setCode(code || "");
+            this.onUpdateData = ()=>{};
+        }
+        getCart = () => {
+            if(this.data){
+                return this.data.cart.map(function(e){
+                    return new CProduct(e);
+                });
+            }
+            return;
+
+        }
+        setCode = (code) => {
+            if(code == "") {
+                return;
+            }
+            console.log(code);
+            this.code = code;
+            var that = this;
+            $.get("/api/carts?code=" + this.code, function(a){
+                console.log(a);
+                that.data = a[0] || that.data;
+                that.onUpdateData();
+            });
+
+        }
+        getPhone = () => {
+            if(this.data){
+                return this.data.phone;
+            } 
+            return;
+        }
+        getStatus = () => {
+            if(this.data){
+                return this.data.status || "Chưa có trạng thái"
+            } else {
+                return;
+            }
+        }
+    }
     var app_xemlaidon = new Vue({
         el: "#xemlaidon",
+        mixins: [_support_vue],
         data: {
             code: (new URLSearchParams(window.location.search)).get("code") || "",
-            // model: new BCart(),
+            model: new CCart(),
         },
         methods: {
-            find: function() {
-                var that = this;
-                $.get("/api/carts?code=" + this.code, function(d){
-                    // that.model = new BCart(d);
-                })
+            onUpdateData: function(){
+                console.log(this);
+                this.$forceUpdate();
             }
         },
         created: function(){
-
+            this.model.setCode(this.code);
+            this.model.onUpdateData = this.onUpdateData;
         }
     })
 </script>
