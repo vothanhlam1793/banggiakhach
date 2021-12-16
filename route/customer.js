@@ -127,11 +127,6 @@ module.exports = async app => {
         res.render("customer/createModal");
     })
 
-    router.get("/cart", (req, res)=>{
-        res.render("customer/cart", {
-            title: "Giỏ hàng"
-        })
-    })
     router.get("/info", (req, res)=>{
         res.render("customer/info", {
             title: "Liên hệ"
@@ -165,12 +160,24 @@ module.exports = async app => {
         res.send(data);
     })
     
+    router.get("/cart", function(req, res){
+        res.render("cart/index", {
+            title: "Giỏ hàng"
+        })
+    })
+
     router.get("/renew", async function(req, res){
         await getProducts(1);
         res.send({
             message: "OK"
         })
     })
+    router.get("/demo", function(req, res){
+        res.render("customer/index_temp", {
+            title: "Giỏ hàng"
+        })
+    })
+
 
     require("../createData");
     getProducts(1);

@@ -46,6 +46,7 @@ require("./route/customer")(app);
 app.use("/baogia", require("./route/baogia"));
 app.use("/product", require("./route/product"));
 require("./app/routes/product.route")(app);
+require("./app/routes/cart.route")(app);
 
 app.get('*', function(req, res){
   res.render("customer/index", {

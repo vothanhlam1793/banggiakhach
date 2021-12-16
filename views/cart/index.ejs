@@ -1,0 +1,145 @@
+<html>
+    <head>
+        <%- include("../customer/header.ejs", {title: title}) %>
+        <script src="/js/customer/cart.js"></script>
+    </head>
+    <body class="container-fluid">
+        <div>   
+            <%- include("../customer/menu.ejs",{}) %>
+        </div>
+        <div class="text-center mt-2" id="app">
+            <h4>Giỏ hàng</h4>
+            <div v-if="myCart.getProducts().length == 0">
+                <div class="jumbotron">
+                    <h1>Giỏ hàng đang trống !!!</h1>
+                    <p>Anh quay lại chọn sản phẩm thêm nhé!. <a href="/">Trang chủ</a></p>
+                </div>
+            </div>
+            <div v-else>
+                <div>
+                    <table class="table table-bordered table-striped">
+                        <tr class="text-center">
+                            <th>Tên</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                        <tr v-for="product in myCart.getProducts()">
+                            <td>{{product.getName()}}</td>
+                            <td class="text-right">{{numberWithCommas(product.getPrice())}}</td>
+                            <td><input class="form-control" v-model="product.quanlity" type="number" @change="product.setQuanlity(product.quanlity)"></td>
+                            <td>{{numberWithCommas(product.getPrice() * product.getQuanlity())}}</td>
+                        </tr>
+                    </table>
+                    <div class="text-right">
+                        <p>Tổng đơn: <strong>{{numberWithCommas(myCart.getTotal())}}</strong></p>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-success" @click="openModal()">Hoàn tất đơn hàng</button>
+                </div>
+            </div>            
+            <!-- The Modal -->
+            <div class="modal" id="myModal">
+                <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+            
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                    <h4 class="modal-title">Đặt hàng</h4>
+                    <button type="button" class="close" data-dismiss="modal"  @click="closeModal()">&times;</button>
+                    </div>
+            
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input class="form-control" placeholder="Tên" v-model="name">
+                            <input class="form-control mt-3" placeholder="Số điện thoại liên lạc" v-model="phone">
+                        </div>
+                    </div>
+            
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <div class="">   
+                            <div class="row">
+                                <div class="col">
+                                    <button class="btn btn-success" @click="send()">Gởi đặt hàng</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            
+                </div>
+                </div>
+            </div>
+            <div class="modal" id="myModal1">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+              
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                      <h4 class="modal-title">Trạng thái đặt hàng</h4>
+                    </div>
+              
+                    <!-- Modal body -->
+                    <div class="modal-body text-left">
+                        <div class="jumbotron">
+                            <h1>Cảm ơn anh</h1>
+                            <p>Đơn hàng của mình đã được lưu lại tại Creta</p>
+                            <p>Mã đơn hàng: <strong>{{invoice.code}}</strong></p>
+                            <p>Nhân viên Creta sẽ kiểm tra đơn hàng và báo lại anh trong <strong>2 giờ làm việc</strong> về tình trạng hàng hóa trong kho</p>
+                            <p>Trường hợp gấp anh liên hệ trực tiếp Creta nhé!</p>
+                            <a href="/info">Trang liên hệ</a>
+                        </div>
+                    </div>
+              
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                      <a href="/" class="btn btn-primary" data-dismiss="modal">Quay lại trang chủ</a>
+                    </div>
+              
+                  </div>
+                </div>
+              </div>
+        </div>
+        <script>
+            var app = new Vue({
+                mixins: [_support_vue],
+                el: "#app", 
+                data: {
+                    myCart: my_cart,
+                    name: "",
+                    phone: "",
+                    invoice: {}
+                },
+                methods: {
+                    openModal: function() {
+                        jQuery("#myModal").show();
+                    },
+                    closeModal: function() {
+                        jQuery("#myModal").hide();
+                    },
+                    send: function() {
+                        if(this.name.length == ""){
+                            alert("Anh cho em biết tên với nhé!");
+                            return;
+                        }
+                        if(this.phone.length < 10){
+                            alert("Số điện thoại chưa đúng!");
+                            return;
+                        }
+                        var that = this;
+                        var n = Math.round(Math.random()*100000);
+                        this.myCart.send(this.name, this.phone, n, function(d){
+                            if(d.id){
+                                that.invoice=d;
+                                that.myCart.clear();
+                                jQuery("#myModal1").show();
+                            }
+                        });
+                    }
+                }
+            })
+        </script>
+    </body>
+</html>
