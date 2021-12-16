@@ -1,0 +1,40 @@
+<div id="xemlaidon">
+    
+    <div class="alert alert-warning">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Nhập mã đơn hàng" v-model="code">
+            <div class="input-group-append">
+                <button class="btn btn-success" type="submit" @click="find()">Tìm đơn hàng</button>  
+            </div>
+        </div>
+    </div>
+    <div>
+        <h4>Thông tin đơn hàng</h4>
+        <table class="table table-bordered">
+            <tr >
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+    var app_xemlaidon = new Vue({
+        el: "#xemlaidon",
+        data: {
+            code: (new URLSearchParams(window.location.search)).get("code") || "",
+            // model: new BCart(),
+        },
+        methods: {
+            find: function() {
+                var that = this;
+                $.get("/api/carts?code=" + this.code, function(d){
+                    // that.model = new BCart(d);
+                })
+            }
+        },
+        created: function(){
+
+        }
+    })
+</script>

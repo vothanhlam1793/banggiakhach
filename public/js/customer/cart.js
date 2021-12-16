@@ -1,3 +1,6 @@
+var BCart = Backbone.Model.extend({
+    urlRoot: "/api/carts"
+})
 class MyCart {
     constructor(){
         this.carts = [];
@@ -95,10 +98,10 @@ class CretaCart {
         this.quanlity = this.data.quanlity || 1;
         this.cart = my_cart;
     }
-    add = function(){
+    add = () => {
         this.cart.add(this.data);
     }
-    remove = function(){
+    remove = () => {
         this.cart.remove(this.data);
     }
     check = function(){
@@ -122,27 +125,27 @@ class CretaCart {
         return this.data.quanlity;
     }
 }
-
+var black = new CretaCart();
 Vue.component("add-cart", {
     props: ['product'],
     data: function(){
         return{
-            model: new CretaCart()
+
         }
     },
     methods: {
-        
+
     },
     created: function(){
-        this.model = new CretaCart(this.product);
+
     },
     template: `
         <div>
-            <div v-if="model.check() == false">
-                <button type="button" class="btn btn-warning" @click="model.add()"><i class="material-icons">add_shopping_cart</i></button>
+            <div v-if="product.check() == false">
+                <button type="button" class="btn btn-warning" @click="product.add();">{{product.name}}<i class="material-icons">add_shopping_cart</i></button>
             </div>
             <div v-else>
-                <button type="button" class="btn btn-secondary" @click="model.remove()"><i class="material-icons">add_shopping_cart</i></button>
+                <button type="button" class="btn btn-secondary" @click="product.remove()">{{product.name}}<i class="material-icons">add_shopping_cart</i></button>
             </div>
         </div>
     `

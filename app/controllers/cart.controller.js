@@ -30,9 +30,27 @@ exports.create = (req, res) => {
 
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
-    conditional = {};
+    var master = false;
+    if(req.query.pass == "asrkpvg7"){
+        conditional = {};
+        master = true;
+    } else {
+        conditional = {
+            code: req.query.code
+        };
+    }
+    console.log(conditional, req.query);
     Model.find(conditional).then(data => {
-        res.send(data);
+        if(master){
+            res.send(data);
+        } else {
+            
+            res.send(data.map(function(e){
+                e.name = "";
+                e.phone = e.phone.substring(e.phone.length-3,e.phone.length)
+                return e;
+            }));
+        }
     }).catch(e=>{
         res.status(500).send({
             message: e.message || "Error cannot querry all"

@@ -52,7 +52,7 @@
                             <td v-if="product.type == 'Khuyến mãi'" >{{product.name}} <span class="badge badge-danger">Đang khuyến mãi</span></td>
                             <td v-else>{{product.name}}</td>
                             <td class="text-right">{{numberWithCommas(product.price)}}</td>
-                            <td><add-cart :product="product"></add-cart></td>
+                            <td><add-cart :product="getCretaCart(product)"></add-cart></td>
                         </tr>
                     </tbody>
                 </table>
@@ -74,6 +74,9 @@
         },
         // Function support View - not use process data
         methods: {
+            getCretaCart: function(e){
+                return new CretaCart(e);
+            },
             getProductsWithBranch: function(branch, sheet){
                 return this.products.filter(function(product){
                     return ((product.branch == branch) && (product.sheet == (sheet||product.sheet)));

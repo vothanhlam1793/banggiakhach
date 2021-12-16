@@ -177,8 +177,11 @@ module.exports = async app => {
             title: "Giỏ hàng"
         })
     })
-
-
+    router.get("/viewpacking", function(req, res){
+        res.render("customer/index_xemlaidon", {
+            title: "Giỏ hàng"
+        })
+    })
     require("../createData");
     getProducts(1);
     app.use("/", router);
