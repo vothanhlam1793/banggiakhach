@@ -1,5 +1,8 @@
 <div id="xemlaidon">
     <div class="alert alert-warning">
+        <p>
+            Nhập <strong>mã đơn hàng</strong> đã đặt vào để xem lại nhé!.
+        </p>
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Nhập mã đơn hàng" v-model="code">
             <div class="input-group-append">
@@ -10,16 +13,29 @@
     <div>
         <h4>Thông tin đơn hàng</h4>
         <div v-if="model.data">
-            <p>Số điện thoại: <strong>***{{model.getPhone()}}</strong></p>
-            <p>Trạng thái: <strong>{{model.getStatus()}}</strong></p>
-            <table class="table table-bordered">
-                <tr v-for="p in model.getCart()">
-                    <td>{{p.getName()}}</td>
-                    <td class="text-center">{{p.getQuanlity()}}</td>
-                    <td class="text-right">{{numberWithCommas(p.getPrice())}}</td>
-                    <td class="text-right">{{numberWithCommas(p.getTotal())}}</td>
-                </tr>
-            </table>
+            <div v-if="model.getPhone() == undefined">
+                <div class="jumbotron">
+                    <p>Không tìm thấy đơn hàng ... có mã <strong>{{code}}</strong></p>
+                </div>
+            </div>
+            <div v-else>
+                <p>Số điện thoại: <strong>***{{model.getPhone()}}</strong></p>
+                <!-- <p>Trạng thái: <strong>{{model.getStatus()}}</strong></p> -->
+                <table class="table table-bordered">
+                    <tr class="text-center">
+                        <th>Tên</th>
+                        <th>Số lượng</th>
+                        <th>Giá</th>
+                        <th>Tổng</th>
+                    </tr>
+                    <tr v-for="p in model.getCart()">
+                        <td>{{p.getName()}}</td>
+                        <td class="text-center">{{p.getQuanlity()}}</td>
+                        <td class="text-right">{{numberWithCommas(p.getPrice())}}</td>
+                        <td class="text-right">{{numberWithCommas(p.getTotal())}}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -63,8 +79,8 @@
             this.code = code;
             var that = this;
             $.get("/api/carts?code=" + this.code, function(a){
-                console.log(a);
-                that.data = a[0] || that.data;
+                // console.log(a);
+                that.data = a[0] || {};
                 that.onUpdateData();
             });
 
