@@ -75,7 +75,6 @@
             if(code == "") {
                 return;
             }
-            console.log(code);
             this.code = code;
             var that = this;
             $.get("/api/carts?code=" + this.code, function(a){
@@ -108,7 +107,6 @@
         },
         methods: {
             onUpdateData: function(){
-                console.log(this);
                 this.$forceUpdate();
             }
         },
