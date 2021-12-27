@@ -1,3 +1,4 @@
+var hubot = require("./hubot");
 const db = require("../models");
 const Model = db.carts;
 var nameController = "Cart";
@@ -20,6 +21,11 @@ exports.create = (req, res) => {
     const model = new Model(createObj(req.body));
     model.save(model).then(data=>{
         res.send(data);
+        var mes = [];
+        mes.push("*Website có đơn mới ...*")
+        mes.push("Đơn: *" + req.body.code + "*")
+        mes.push("Nhanh tay gọi điện cho khách nhé!. <3 <3 <3");
+        hubot.send(mes.join("\n"), "kinh_doanh");
     }).catch(e=>{
         console.log(e);
         res.status(500).send({
